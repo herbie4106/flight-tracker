@@ -1,0 +1,42 @@
+name: Daily Flight Data Collector
+
+on:
+  schedule:
+    # 매일 한국 시간 오후 2시 (UTC 05:00)에 실행
+    - cron: '0 5 * * *'
+  workflow_dispatch: # 수동 실행 버튼 (테스트용)
+
+permissions:
+  contents: write
+
+jobs:
+  run-script:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: 코드 가져오기 (Checkout)
+      uses: actions/checkout@v4
+
+    - name: 파이썬 설정
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+
+    - name: 라이브러리 설치
+      run: |
+        pip install -r requirements.txt
+
+    - name: 파이썬 스크립트 실행
+      env:
+        API_KEY_ICN: ${{ secrets.API_KEY_ICN }} # 아까 등록한 비밀키 사용
+      run: |
+        python flight_collector.py
+
+    - name: 변경된 CSV 파일 저장 (Commit & Push)
+      run: |
+        git config --global user.name "GitHub Action Bot"
+        git config --global user.email "actions@github.com"
+        git add *.csv
+        # 변경사항이 있을 때만 커밋 (에러 방지)
+        git commit -m "Update flight data: $(date +'%Y-%m-%d')" || exit 0
+        git push
