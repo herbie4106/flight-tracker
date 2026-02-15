@@ -14,7 +14,9 @@ import xml.etree.ElementTree as ET
 API_SOURCE = "ICN"  # "ICN" = 인천공항(당일 운항현황), "KAC" = 한국공항공사(국제선 스케줄)
 
 # 인천공항공사 API 키 (여객편 운항현황 다국어 - 15095093 활용신청 후 발급)
-API_KEY = "9e77ad58a11ddf5ae8c4aaea81e4495ffe2db8da1ab6bacbbb4442f5f39a0e95"
+# [수정됨] GitHub Secrets에서 API 키를 가져옵니다.
+# 만약 Secrets가 없으면(내 컴퓨터에서 돌릴 때), 뒤에 적힌 기본 키를 사용합니다.
+API_KEY = os.environ.get("API_KEY_ICN", "9e77ad58a11ddf5ae8c4aaea81e4495ffe2db8da1ab6bacbbb4442f5f39a0e95")
 
 # 한국공항공사 API 키 (항공기 운항정보 - 국제선 스케줄) ※ 별도 활용신청 후 발급
 # 공공데이터포털 → 한국공항공사_항공기 운항정보 → 활용신청
