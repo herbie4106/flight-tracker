@@ -14,7 +14,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4.2.2        # ✅ Node.js 24 지원 버전
+        uses: actions/checkout@v6        # ✅ Node.js 24 지원 버전
 
       - name: Set up Python
         uses: actions/setup-python@v5        # ✅ Node.js 24 지원 버전
