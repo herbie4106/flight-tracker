@@ -20,30 +20,83 @@ UPDATE_MODE = True
 DEBUG_MODE = True
 TEST_REALTIME_MODE = False
 
-# 조회할 일본 주요 공항 목록
+# ==========================================
+# [공항 정보 및 매핑 데이터]
+# ==========================================
 JAPAN_AIRPORTS = {
+    # 홋카이도
+    "AKJ": {"name": "Asahikawa", "lat": 43.6708, "lon": 142.4475},
+    "CTS": {"name": "Sapporo (Chitose)", "lat": 42.7752, "lon": 141.6923},
+    "OBO": {"name": "Obihiro", "lat": 42.7333, "lon": 143.2175},
+    "HKD": {"name": "Hakodate", "lat": 41.7700, "lon": 140.8220},
+    # 도호쿠
+    "AOJ": {"name": "Aomori", "lat": 40.7347, "lon": 140.6908},
+    "SDJ": {"name": "Sendai", "lat": 38.1397, "lon": 140.9169},
+    "FKS": {"name": "Fukushima", "lat": 37.2274, "lon": 140.4350},
+    # 간토
+    "IBR": {"name": "Ibaraki", "lat": 36.1811, "lon": 140.4147},
     "NRT": {"name": "Narita (Tokyo)", "lat": 35.7719, "lon": 140.3929},
     "HND": {"name": "Haneda (Tokyo)", "lat": 35.5494, "lon": 139.7798},
-    "KIX": {"name": "Kansai (Osaka)", "lat": 34.4320, "lon": 135.2304},
-    "FUK": {"name": "Fukuoka", "lat": 33.5859, "lon": 130.4507},
-    "CTS": {"name": "Sapporo (Chitose)", "lat": 42.7752, "lon": 141.6923},
-    "NGO": {"name": "Nagoya (Chubu)", "lat": 34.8584, "lon": 136.8048},
-    "OKA": {"name": "Okinawa (Naha)", "lat": 26.1958, "lon": 127.6458},
-    "HIJ": {"name": "Hiroshima", "lat": 34.4361, "lon": 132.9194},
-    "MYJ": {"name": "Matsuyama", "lat": 33.8272, "lon": 132.6997},
-    "TAK": {"name": "Takamatsu", "lat": 34.2141, "lon": 134.0156},
-    "KMJ": {"name": "Kumamoto", "lat": 32.8372, "lon": 130.8550},
-    "KOJ": {"name": "Kagoshima", "lat": 31.8039, "lon": 130.7194},
-    "FKS": {"name": "Fukushima", "lat": 37.2274, "lon": 140.4350},
-    "OITA": {"name": "Oita", "lat": 33.4794, "lon": 131.7378},
-    "SHM": {"name": "Shizuoka", "lat": 34.7963, "lon": 138.1796},
-    "KKJ": {"name": "Kitakyushu", "lat": 33.8458, "lon": 131.0350},
+    # 주부
+    "KIJ": {"name": "Niigata", "lat": 37.9558, "lon": 139.1208},
     "FSZ": {"name": "Shizuoka (Mt.Fuji)", "lat": 34.7961, "lon": 138.1797},
-    "SDJ": {"name": "Sendai", "lat": 38.1397, "lon": 140.9169},
-    "KOM": {"name": "Komatsu", "lat": 36.3938, "lon": 136.4075},
-    "YGJ": {"name": "Yonago", "lat": 35.4963, "lon": 133.2635}
+    "NGO": {"name": "Nagoya (Chubu)", "lat": 34.8584, "lon": 136.8048},
+    "KMQ": {"name": "Komatsu", "lat": 36.3938, "lon": 136.4075},
+    # 관서
+    "KIX": {"name": "Kansai (Osaka)", "lat": 34.4320, "lon": 135.2304},
+    "UKB": {"name": "Kobe", "lat": 34.6329, "lon": 135.2237},
+    # 주고쿠
+    "OKJ": {"name": "Okayama", "lat": 34.7569, "lon": 133.8550},
+    "HIJ": {"name": "Hiroshima", "lat": 34.4361, "lon": 132.9194},
+    "YGJ": {"name": "Yonago", "lat": 35.4963, "lon": 133.2635},
+    # 시코쿠
+    "TKS": {"name": "Tokushima", "lat": 34.1308, "lon": 134.6064},
+    "TAK": {"name": "Takamatsu", "lat": 34.2141, "lon": 134.0156},
+    "MYJ": {"name": "Matsuyama", "lat": 33.8272, "lon": 132.6997},
+    # 규슈
+    "KKJ": {"name": "Kitakyushu", "lat": 33.8458, "lon": 131.0350},
+    "FUK": {"name": "Fukuoka", "lat": 33.5859, "lon": 130.4507},
+    "HSG": {"name": "Saga", "lat": 33.1497, "lon": 130.3022},
+    "NGS": {"name": "Nagasaki", "lat": 32.9169, "lon": 129.9136},
+    "KMJ": {"name": "Kumamoto", "lat": 32.8372, "lon": 130.8550},
+    "OIT": {"name": "Oita", "lat": 33.4794, "lon": 131.7378},
+    "KMI": {"name": "Miyazaki", "lat": 31.8772, "lon": 131.4486},
+    "KOJ": {"name": "Kagoshima", "lat": 31.8039, "lon": 130.7194},
+    # 오키나와
+    "OKA": {"name": "Okinawa (Naha)", "lat": 26.1958, "lon": 127.6458},
+    "MMY": {"name": "Miyakojima", "lat": 24.7828, "lon": 125.2950},
+    "ISG": {"name": "Ishigaki", "lat": 24.3964, "lon": 124.1864},
 }
 
+REGION_MAP = {
+    "AKJ": "홋카이도", "CTS": "홋카이도", "OBO": "홋카이도", "HKD": "홋카이도",
+    "AOJ": "도호쿠", "SDJ": "도호쿠", "FKS": "도호쿠",
+    "IBR": "간토", "NRT": "간토", "HND": "간토",
+    "KIJ": "주부", "FSZ": "주부", "NGO": "주부", "KMQ": "주부",
+    "KIX": "관서", "UKB": "관서",
+    "OKJ": "주고쿠", "HIJ": "주고쿠", "YGJ": "주고쿠",
+    "TKS": "시코쿠", "TAK": "시코쿠", "MYJ": "시코쿠",
+    "KKJ": "규슈", "FUK": "규슈", "HSG": "규슈", "NGS": "규슈",
+    "KMJ": "규슈", "OIT": "규슈", "KMI": "규슈", "KOJ": "규슈",
+    "OKA": "오키나와", "MMY": "오키나와", "ISG": "오키나와",
+}
+
+KOR_NAME_MAP = {
+    "AKJ": "아사히카와", "CTS": "삿포로(신치토세)", "OBO": "오비히로", "HKD": "하코다테",
+    "AOJ": "아오모리", "SDJ": "센다이", "FKS": "후쿠시마",
+    "IBR": "이바라키", "NRT": "도쿄(나리타)", "HND": "도쿄(하네다)",
+    "KIJ": "니가타", "FSZ": "시즈오카(후지산)", "NGO": "나고야(주부)", "KMQ": "고마쓰",
+    "KIX": "오사카(간사이)", "UKB": "고베",
+    "OKJ": "오카야마", "HIJ": "히로시마", "YGJ": "요나고",
+    "TKS": "도쿠시마", "TAK": "다카마쓰", "MYJ": "마쓰야마",
+    "KKJ": "기타큐슈", "FUK": "후쿠오카", "HSG": "사가", "NGS": "나가사키",
+    "KMJ": "구마모토", "OIT": "오이타", "KMI": "미야자키", "KOJ": "가고시마",
+    "OKA": "오키나와(나하)", "MMY": "미야코지마", "ISG": "이시가키",
+}
+
+# ==========================================
+# [API 통신 함수]
+# ==========================================
 KAC_BASE_URL = "http://openapi.airport.co.kr/service/rest"
 KAC_INTERNATIONAL_SCHEDULE_PATH = "FlightScheduleList/getInternationalFlightSchedule"
 
@@ -62,12 +115,13 @@ def get_flight_data_kac(airport_code, search_date, debug=False):
         items = [{c.tag: (c.text or "").strip() for c in item} for item in root.findall(".//item")]
         return items
     except Exception as e:
-        print(f"  ⚠️ KAC API 오류 [{airport_code}]: {e}")  # ✅ 에러 로깅 추가
+        if debug:
+            print(f"  ⚠️ KAC API 오류 [{airport_code}]: {e}")
         return []
 
 def get_flight_data(airport_code, search_date, debug=False, use_current_time=False):
     if not API_KEY:
-        print("❌ API_KEY_ICN 환경변수가 설정되지 않았습니다.")  # ✅ 키 누락 감지
+        print("❌ API_KEY_ICN 환경변수가 설정되지 않았습니다.")
         return []
 
     url = "http://apis.data.go.kr/B551177/StatusOfPassengerFlightsOdp/getPassengerDeparturesOdp"
@@ -97,9 +151,13 @@ def get_flight_data(airport_code, search_date, debug=False, use_current_time=Fal
                 return items
         return []
     except Exception as e:
-        print(f"  ⚠️ ICN API 오류 [{airport_code} / {search_date}]: {e}")  # ✅ 에러 로깅 추가
+        if debug:
+            print(f"  ⚠️ ICN API 오류 [{airport_code} / {search_date}]: {e}")
         return []
 
+# ==========================================
+# [데이터 처리 함수]
+# ==========================================
 def load_existing_data():
     if os.path.exists(CSV_FILENAME) and UPDATE_MODE:
         try:
@@ -114,23 +172,6 @@ def create_unique_key(row):
 def process_and_save_summary(df):
     if df.empty or 'Weekday' not in df.columns or 'Destination_Code' not in df.columns:
         return
-
-    REGION_MAP = {
-        "NRT": "간토", "HND": "간토", "KIX": "관서",
-        "FUK": "규슈", "KMJ": "규슈", "KOJ": "규슈", "OITA": "규슈", "KKJ": "규슈",
-        "CTS": "홋카이도", "NGO": "주부", "SHM": "주부", "FSZ": "주부", "KOM": "주부",
-        "OKA": "오키나와", "HIJ": "주고쿠", "YGJ": "주고쿠",
-        "MYJ": "시코쿠", "TAK": "시코쿠", "SDJ": "도호쿠", "FKS": "도호쿠"
-    }
-    KOR_NAME_MAP = {
-        "NRT": "도쿄(나리타)", "HND": "도쿄(하네다)", "KIX": "오사카(간사이)",
-        "FUK": "후쿠오카", "CTS": "삿포로(신치토세)", "NGO": "나고야(주부)",
-        "OKA": "오키나와(나하)", "HIJ": "히로시마", "MYJ": "마쓰야마",
-        "TAK": "다카마쓰", "KMJ": "구마모토", "KOJ": "가고시마",
-        "FKS": "후쿠시마", "OITA": "오이타", "SHM": "시즈오카",
-        "KKJ": "기타큐슈", "FSZ": "시즈오카", "SDJ": "센다이",
-        "KOM": "고마쓰", "YGJ": "요나고"
-    }
 
     summary_list = []
     weekday_order = ['월', '화', '수', '목', '금', '토', '일']
@@ -189,7 +230,8 @@ def main():
     for search_date in date_range:
         date_str = search_date.strftime("%Y%m%d")
         for code, info in JAPAN_AIRPORTS.items():
-            flights = get_flight_data_kac(code, date_str) if API_SOURCE == "KAC" else get_flight_data(code, date_str)
+            flights = get_flight_data_kac(code, date_str) if API_SOURCE == "KAC" else get_flight_data(code, date_str, debug=DEBUG_MODE)
+            
             if flights:
                 for f in flights:
                     if API_SOURCE == "KAC":
@@ -229,7 +271,7 @@ def main():
 
         if 'Weekday' not in df.columns:
             df['Weekday'] = pd.to_datetime(df['Flight_Date'], format='%Y%m%d', errors='coerce').dt.weekday.apply(
-                lambda x: ['월','화','수','목','금','토','일'][x] if 0 <= x <= 6 else '')
+                lambda x: ['월','화','수','목','금','토','일'][int(x)] if pd.notnull(x) and 0 <= x <= 6 else '')
         if 'Destination_Name' not in df.columns:
             df['Destination_Name'] = df['Destination_Code'].map(lambda c: JAPAN_AIRPORTS.get(c, {}).get('name', c))
         if 'Flight_Date' in df.columns:
@@ -240,7 +282,6 @@ def main():
         print(f"✅ 신규 데이터 {len(all_data)}건 추가 완료")
 
     else:
-        # ✅ 신규 데이터 없어도 기존 데이터로 map 파일 재생성
         print("ℹ️ 신규 데이터 없음 (이미 수집됐거나 API 무응답). 기존 데이터로 map 파일 재생성합니다.")
         if not existing_df.empty:
             process_and_save_summary(existing_df)
