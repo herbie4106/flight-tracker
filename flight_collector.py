@@ -42,6 +42,7 @@ JAPAN_AIRPORTS = {
     "FSZ": {"name": "Shizuoka (Mt.Fuji)", "lat": 34.7961, "lon": 138.1797},
     "NGO": {"name": "Nagoya (Chubu)", "lat": 34.8584, "lon": 136.8048},
     "KMQ": {"name": "Komatsu", "lat": 36.3938, "lon": 136.4075},
+    "TOY": {"name": "Toyama", "lat": 36.6483, "lon": 137.1875},  # 추가
     # 관서
     "KIX": {"name": "Kansai (Osaka)", "lat": 34.4320, "lon": 135.2304},
     "UKB": {"name": "Kobe", "lat": 34.6329, "lon": 135.2237},
@@ -49,10 +50,12 @@ JAPAN_AIRPORTS = {
     "OKJ": {"name": "Okayama", "lat": 34.7569, "lon": 133.8550},
     "HIJ": {"name": "Hiroshima", "lat": 34.4361, "lon": 132.9194},
     "YGJ": {"name": "Yonago", "lat": 35.4963, "lon": 133.2635},
+    "UBJ": {"name": "Yamaguchi Ube", "lat": 33.9303, "lon": 131.2792},  # 추가
     # 시코쿠
     "TKS": {"name": "Tokushima", "lat": 34.1308, "lon": 134.6064},
     "TAK": {"name": "Takamatsu", "lat": 34.2141, "lon": 134.0156},
     "MYJ": {"name": "Matsuyama", "lat": 33.8272, "lon": 132.6997},
+    "KCZ": {"name": "Kochi", "lat": 33.5461, "lon": 133.6694},  # 추가
     # 규슈
     "KKJ": {"name": "Kitakyushu", "lat": 33.8458, "lon": 131.0350},
     "FUK": {"name": "Fukuoka", "lat": 33.5859, "lon": 130.4507},
@@ -64,7 +67,7 @@ JAPAN_AIRPORTS = {
     "KOJ": {"name": "Kagoshima", "lat": 31.8039, "lon": 130.7194},
     # 오키나와
     "OKA": {"name": "Okinawa (Naha)", "lat": 26.1958, "lon": 127.6458},
-    "MMY": {"name": "Miyakojima", "lat": 24.7828, "lon": 125.2950},
+    "SHI": {"name": "Shimojishima (Miyako)", "lat": 24.8267, "lon": 125.1447},  # MMY 교체
     "ISG": {"name": "Ishigaki", "lat": 24.3964, "lon": 124.1864},
 }
 
@@ -72,26 +75,26 @@ REGION_MAP = {
     "AKJ": "홋카이도", "CTS": "홋카이도", "OBO": "홋카이도", "HKD": "홋카이도",
     "AOJ": "도호쿠", "SDJ": "도호쿠", "FKS": "도호쿠",
     "IBR": "간토", "NRT": "간토", "HND": "간토",
-    "KIJ": "주부", "FSZ": "주부", "NGO": "주부", "KMQ": "주부",
+    "KIJ": "주부", "FSZ": "주부", "NGO": "주부", "KMQ": "주부", "TOY": "주부",
     "KIX": "관서", "UKB": "관서",
-    "OKJ": "주고쿠", "HIJ": "주고쿠", "YGJ": "주고쿠",
-    "TKS": "시코쿠", "TAK": "시코쿠", "MYJ": "시코쿠",
+    "OKJ": "주고쿠", "HIJ": "주고쿠", "YGJ": "주고쿠", "UBJ": "주고쿠",
+    "TKS": "시코쿠", "TAK": "시코쿠", "MYJ": "시코쿠", "KCZ": "시코쿠",
     "KKJ": "규슈", "FUK": "규슈", "HSG": "규슈", "NGS": "규슈",
     "KMJ": "규슈", "OIT": "규슈", "KMI": "규슈", "KOJ": "규슈",
-    "OKA": "오키나와", "MMY": "오키나와", "ISG": "오키나와",
+    "OKA": "오키나와", "SHI": "오키나와", "ISG": "오키나와",
 }
 
 KOR_NAME_MAP = {
     "AKJ": "아사히카와", "CTS": "삿포로(신치토세)", "OBO": "오비히로", "HKD": "하코다테",
     "AOJ": "아오모리", "SDJ": "센다이", "FKS": "후쿠시마",
     "IBR": "이바라키", "NRT": "도쿄(나리타)", "HND": "도쿄(하네다)",
-    "KIJ": "니가타", "FSZ": "시즈오카(후지산)", "NGO": "나고야(주부)", "KMQ": "고마쓰",
+    "KIJ": "니가타", "FSZ": "시즈오카(후지산)", "NGO": "나고야(주부)", "KMQ": "고마쓰", "TOY": "도야마",
     "KIX": "오사카(간사이)", "UKB": "고베",
-    "OKJ": "오카야마", "HIJ": "히로시마", "YGJ": "요나고",
-    "TKS": "도쿠시마", "TAK": "다카마쓰", "MYJ": "마쓰야마",
+    "OKJ": "오카야마", "HIJ": "히로시마", "YGJ": "요나고", "UBJ": "야마구치(우베)",
+    "TKS": "도쿠시마", "TAK": "다카마쓰", "MYJ": "마쓰야마", "KCZ": "고치",
     "KKJ": "기타큐슈", "FUK": "후쿠오카", "HSG": "사가", "NGS": "나가사키",
     "KMJ": "구마모토", "OIT": "오이타", "KMI": "미야자키", "KOJ": "가고시마",
-    "OKA": "오키나와(나하)", "MMY": "미야코지마", "ISG": "이시가키",
+    "OKA": "오키나와(나하)", "SHI": "미야코지마(시모지시마)", "ISG": "이시가키",
 }
 
 # ==========================================
