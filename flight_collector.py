@@ -8,18 +8,17 @@ import xml.etree.ElementTree as ET
 # ==========================================
 # [사용자 입력] API 선택 및 키
 # ==========================================
-API_SOURCE = "ICN"  
-API_KEY = os.environ.get("API_KEY_ICN", "9e77ad58a11ddf5ae8c4aaea81e4495ffe2db8da1ab6bacbbb4442f5f39a0e95")
-API_KEY_KAC = ""  
+API_SOURCE = "ICN"
+API_KEY = os.environ.get("API_KEY_ICN")  # ✅ 하드코딩 제거 - Secret에서만 읽음
+API_KEY_KAC = ""
 
-CSV_FILENAME = "japan_flight_api_raw.csv"   
-MAP_FILENAME = "japan_flight_for_map.csv"  
-
-DAYS_AHEAD = 0  
-DAYS_BACK = 0   
-UPDATE_MODE = True  
-DEBUG_MODE = True  
-TEST_REALTIME_MODE = False  
+CSV_FILENAME = "japan_flight_api_raw.csv"
+MAP_FILENAME = "japan_flight_for_map.csv"
+DAYS_AHEAD = 0
+DAYS_BACK = 0
+UPDATE_MODE = True
+DEBUG_MODE = True
+TEST_REALTIME_MODE = False
 
 # 조회할 일본 주요 공항 목록
 JAPAN_AIRPORTS = {
@@ -53,7 +52,7 @@ def get_flight_data_kac(airport_code, search_date, debug=False):
         return []
     url = f"{KAC_BASE_URL}/{KAC_INTERNATIONAL_SCHEDULE_PATH}"
     params = {
-        "ServiceKey": API_KEY_KAC, "depAirportId": "ICN", 
+        "ServiceKey": API_KEY_KAC, "depAirportId": "ICN",
         "arrAirportId": airport_code, "depPlandTime": search_date,
     }
     try:
@@ -62,12 +61,16 @@ def get_flight_data_kac(airport_code, search_date, debug=False):
         root = ET.fromstring(resp.content)
         items = [{c.tag: (c.text or "").strip() for c in item} for item in root.findall(".//item")]
         return items
-    except Exception:
+    except Exception as e:
+        print(f"  ⚠️ KAC API 오류 [{airport_code}]: {e}")  # ✅ 에러 로깅 추가
         return []
 
 def get_flight_data(airport_code, search_date, debug=False, use_current_time=False):
+    if not API_KEY:
+        print("❌ API_KEY_ICN 환경변수가 설정되지 않았습니다.")  # ✅ 키 누락 감지
+        return []
+
     url = "http://apis.data.go.kr/B551177/StatusOfPassengerFlightsOdp/getPassengerDeparturesOdp"
-    
     if use_current_time:
         now = datetime.now()
         from_time = (now - timedelta(hours=2)).strftime("%H%M")
@@ -75,7 +78,7 @@ def get_flight_data(airport_code, search_date, debug=False, use_current_time=Fal
         search_date = now.strftime("%Y%m%d")
     else:
         from_time, to_time = "0000", "2359"
-    
+
     params = {
         "serviceKey": API_KEY, "numOfRows": 1000, "pageNo": 1,
         "from_time": from_time, "to_time": to_time,
@@ -86,7 +89,6 @@ def get_flight_data(airport_code, search_date, debug=False, use_current_time=Fal
         response = requests.get(url, params=params, timeout=10)
         response.raise_for_status()
         data = response.json()
-        
         if 'response' in data and 'body' in data['response']:
             body = data['response']['body']
             if body and 'items' in body and body['items']:
@@ -94,7 +96,8 @@ def get_flight_data(airport_code, search_date, debug=False, use_current_time=Fal
                 if isinstance(items, dict): items = [items]
                 return items
         return []
-    except Exception:
+    except Exception as e:
+        print(f"  ⚠️ ICN API 오류 [{airport_code} / {search_date}]: {e}")  # ✅ 에러 로깅 추가
         return []
 
 def load_existing_data():
@@ -109,9 +112,6 @@ def create_unique_key(row):
     return f"{row.get('Flight_ID', '')}_{row.get('Flight_Date', '')}_{row.get('Destination_Code', '')}"
 
 def process_and_save_summary(df):
-    """
-    [과거 양식 복구] WKT, Group, 주요_항공사 컬럼 추가 및 항공사별 요일 요약
-    """
     if df.empty or 'Weekday' not in df.columns or 'Destination_Code' not in df.columns:
         return
 
@@ -122,14 +122,13 @@ def process_and_save_summary(df):
         "OKA": "오키나와", "HIJ": "주고쿠", "YGJ": "주고쿠",
         "MYJ": "시코쿠", "TAK": "시코쿠", "SDJ": "도호쿠", "FKS": "도호쿠"
     }
-    
     KOR_NAME_MAP = {
-        "NRT": "도쿄(나리타)", "HND": "도쿄(하네다)", "KIX": "오사카(간사이)", 
-        "FUK": "후쿠오카", "CTS": "삿포로(신치토세)", "NGO": "나고야(주부)", 
-        "OKA": "오키나와(나하)", "HIJ": "히로시마", "MYJ": "마쓰야마", 
-        "TAK": "다카마쓰", "KMJ": "구마모토", "KOJ": "가고시마", 
-        "FKS": "후쿠시마", "OITA": "오이타", "SHM": "시즈오카", 
-        "KKJ": "기타큐슈", "FSZ": "시즈오카", "SDJ": "센다이", 
+        "NRT": "도쿄(나리타)", "HND": "도쿄(하네다)", "KIX": "오사카(간사이)",
+        "FUK": "후쿠오카", "CTS": "삿포로(신치토세)", "NGO": "나고야(주부)",
+        "OKA": "오키나와(나하)", "HIJ": "히로시마", "MYJ": "마쓰야마",
+        "TAK": "다카마쓰", "KMJ": "구마모토", "KOJ": "가고시마",
+        "FKS": "후쿠시마", "OITA": "오이타", "SHM": "시즈오카",
+        "KKJ": "기타큐슈", "FSZ": "시즈오카", "SDJ": "센다이",
         "KOM": "고마쓰", "YGJ": "요나고"
     }
 
@@ -140,8 +139,8 @@ def process_and_save_summary(df):
         lat = JAPAN_AIRPORTS.get(dest_code, {}).get("lat", 0)
         lon = JAPAN_AIRPORTS.get(dest_code, {}).get("lon", 0)
         kor_name = KOR_NAME_MAP.get(dest_code, dest_code)
-
         airline_days = {}
+
         for _, row in group.iterrows():
             airline = row.get('Airline', '')
             weekday = row.get('Weekday', '')
@@ -154,7 +153,7 @@ def process_and_save_summary(df):
             sorted_days = sorted([d for d in days_set if d in weekday_order], key=lambda x: weekday_order.index(x))
             day_str = "매일" if len(sorted_days) == 7 else ",".join(sorted_days)
             desc_parts.append(f"{airline}({day_str})")
-        
+
         description = " / ".join(desc_parts)
         airlines = list(airline_days.keys())
         main_airlines = "다수 항공사" if len(airlines) >= 3 else ", ".join(airlines)
@@ -178,14 +177,15 @@ def process_and_save_summary(df):
 
 def main():
     today = datetime.now()
-    date_range = [today - timedelta(days=i) for i in range(DAYS_BACK, 0, -1)] + [today + timedelta(days=i) for i in range(DAYS_AHEAD + 1)]
-    
+    date_range = [today - timedelta(days=i) for i in range(DAYS_BACK, 0, -1)] + \
+                 [today + timedelta(days=i) for i in range(DAYS_AHEAD + 1)]
+
     existing_df = load_existing_data()
     existing_keys = set(existing_df.apply(create_unique_key, axis=1).values) if not existing_df.empty else set()
-    
+
     all_data = []
     collection_timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    
+
     for search_date in date_range:
         date_str = search_date.strftime("%Y%m%d")
         for code, info in JAPAN_AIRPORTS.items():
@@ -202,10 +202,10 @@ def main():
                         sch_time = f.get('scheduleDateTime', '0000')
                         time_str = sch_time[-4:-2] + ":" + sch_time[-2:] if len(sch_time) >= 4 else "00:00"
                         airline = f.get('airline', 'N/A')
-                    
+
                     unique_key = f"{flight_id}_{date_str}_{code}"
                     if UPDATE_MODE and unique_key in existing_keys: continue
-                    
+
                     weekday_kr = ['월','화','수','목','금','토','일'][search_date.weekday()]
                     all_data.append({
                         "Name": f"{flight_id} ({airline})",
@@ -217,24 +217,33 @@ def main():
                         "Airline": airline, "Collected_At": collection_timestamp
                     })
             time.sleep(0.1)
-    
+
     if all_data:
         new_df = pd.DataFrame(all_data)
         if UPDATE_MODE and not existing_df.empty:
             df = pd.concat([existing_df.drop(columns=['_unique_key'], errors='ignore'), new_df], ignore_index=True)
         else:
             df = new_df
-        
+
         df = df.drop_duplicates(subset=['Flight_ID', 'Flight_Date', 'Destination_Code'], keep='last')
+
         if 'Weekday' not in df.columns:
-            df['Weekday'] = pd.to_datetime(df['Flight_Date'], format='%Y%m%d', errors='coerce').dt.weekday.apply(lambda x: ['월','화','수','목','금','토','일'][x] if 0 <= x <= 6 else '')
+            df['Weekday'] = pd.to_datetime(df['Flight_Date'], format='%Y%m%d', errors='coerce').dt.weekday.apply(
+                lambda x: ['월','화','수','목','금','토','일'][x] if 0 <= x <= 6 else '')
         if 'Destination_Name' not in df.columns:
             df['Destination_Name'] = df['Destination_Code'].map(lambda c: JAPAN_AIRPORTS.get(c, {}).get('name', c))
         if 'Flight_Date' in df.columns:
             df = df.sort_values(['Flight_Date', 'Flight_Time', 'Destination_Code'])
-        
+
         df.to_csv(CSV_FILENAME, index=False, encoding='utf-8-sig')
         process_and_save_summary(df)
+        print(f"✅ 신규 데이터 {len(all_data)}건 추가 완료")
+
+    else:
+        # ✅ 신규 데이터 없어도 기존 데이터로 map 파일 재생성
+        print("ℹ️ 신규 데이터 없음 (이미 수집됐거나 API 무응답). 기존 데이터로 map 파일 재생성합니다.")
+        if not existing_df.empty:
+            process_and_save_summary(existing_df)
 
 if __name__ == "__main__":
     main()
