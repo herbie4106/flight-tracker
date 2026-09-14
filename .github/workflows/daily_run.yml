@@ -14,10 +14,10 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v6        # ✅ Node.js 24 지원 버전
+        uses: actions/checkout@v6
 
       - name: Set up Python
-        uses: actions/setup-python@v5        # ✅ Node.js 24 지원 버전
+        uses: actions/setup-python@v5
         with:
           python-version: '3.9'
 
@@ -36,4 +36,17 @@ jobs:
           git add *.csv
           # 변경사항이 있을 때만 커밋 (에러 방지)
           git commit -m "Update flight data: $(date +'%Y-%m-%d')" || exit 0
-          git push
+
+          # GitHub 서버측 일시적 push 오류(fatal error in commit_refs, non-fast-forward 등) 대비 재시도
+          for i in 1 2 3 4 5; do
+            if git push; then
+              echo "✅ Push 성공 (시도 $i)"
+              exit 0
+            fi
+            echo "⚠️ Push 실패 (시도 $i/5). 원격 변경사항 반영 후 10초 뒤 재시도..."
+            sleep 10
+            git pull --rebase origin main || true
+          done
+
+          echo "❌ 5회 재시도 후에도 push 실패"
+          exit 1
